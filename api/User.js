@@ -185,10 +185,10 @@ const sendVerificationEmail = ({ _id, email, name }, res) => {
       .catch((err) => {
         // Handle email sending failure
         console.error(err);
-        return res.status(500).json({
-          status: "FAILED",
-          message: "Verification email failed!",
-        });
+        // return res.status(500).json({
+        //   status: "FAILED",
+        //   message: "Verification email failed!",
+        // });
       });
   })
   .catch((err) => {
