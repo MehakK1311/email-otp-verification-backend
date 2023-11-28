@@ -133,7 +133,9 @@ router.post("/signup", (req, res) => {
 
 //send verification email function
 const sendVerificationEmail = ({ _id, email, name }, res) => {
-  const currentUrl = "http://localhost:3000/";
+  const dev = "http://localhost:3000/";
+  const prod = "https://email-otp-verification-backend-me92.onrender.com/";
+  const currentUrl = process.env.NODE_ENV ? prod : dev;
 
   const uniqueString = uuidv4() + _id;
 
@@ -154,7 +156,7 @@ const sendVerificationEmail = ({ _id, email, name }, res) => {
     <p>If you did not sign up for this account, you can ignore this email.</p>
     <p><b>Link expires in 6 hours</b></p>
 
-    <p>Thank you,<br> [Your Company Name]</p>`,
+    <p>Thank you</p>`,
   };
 
   // hash unique string
@@ -211,7 +213,6 @@ const sendVerificationEmail = ({ _id, email, name }, res) => {
     });
 };
 
-
 //verify email
 router.get("/verify/:userId/:uniqueString", (req, res) => {
   let { userId, uniqueString } = req.params;
@@ -231,19 +232,25 @@ router.get("/verify/:userId/:uniqueString", (req, res) => {
               User.deleteOne({ _id: userId })
                 .then(() => {
                   let message = "Link has expires. Please sign up again";
-                  return res.redirect(`/user/verified/error=true&message=${message}`);
+                  return res.redirect(
+                    `/user/verified/error=true&message=${message}`
+                  );
                 })
                 .catch((error) => {
                   console.log(error);
                   let message = "Cleaning user with expired string failed";
-                  return res.redirect(`/user/verified/error=true&message=${message}`);
+                  return res.redirect(
+                    `/user/verified/error=true&message=${message}`
+                  );
                 });
             })
             .catch((err) => {
               console.error(err);
               let message =
                 "An error occurred while clearing expired user verification email";
-              return res.redirect(`/user/verified/error=true&message=${message}`);
+              return res.redirect(
+                `/user/verified/error=true&message=${message}`
+              );
             });
         } else {
           //valid record exists so we validate the user string
@@ -283,12 +290,16 @@ router.get("/verify/:userId/:uniqueString", (req, res) => {
               } else {
                 //record is incorrect
                 let message = "Invalid details passed. Check your inbox";
-                return res.redirect(`/user/verified/error=true&message=${message}`);
+                return res.redirect(
+                  `/user/verified/error=true&message=${message}`
+                );
               }
             })
             .catch((err) => {
               let message = "An error occurred while comparing unique string";
-              return res.redirect(`/user/verified/error=true&message=${message}`);
+              return res.redirect(
+                `/user/verified/error=true&message=${message}`
+              );
             });
         }
       } else {
