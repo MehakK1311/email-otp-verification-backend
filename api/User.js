@@ -258,7 +258,7 @@ router.get("/verify/:userId/:uniqueString", (req, res) => {
                     UserVerification.deleteOne({ userId })
                       .then(() => {
                         res.sendFile(
-                          path.join(__dirname, "./../verified.html")
+                          path.join(__dirname, "../views/verified.html")
                         );
                       })
                       .catch((err) => {
@@ -304,7 +304,7 @@ router.get("/verify/:userId/:uniqueString", (req, res) => {
 
 //verified page route
 router.get("/verified", (req, res) => {
-  res.sendFile(path.join(__dirname, "./../verified.html"));
+  res.sendFile(path.join(__dirname, "../views/verified.html"));
 });
 
 //signin
