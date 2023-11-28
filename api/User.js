@@ -149,9 +149,8 @@ const sendVerificationEmail = ({ _id, email, name }, res) => {
 
     <p>Thank you for signing up! To complete your registration, please click the link below to verify your email:</p>
 
-    <p><a href=${
-      currentUrl + "user/verify/" + _id + "/" + uniqueString
-    } style="text-decoration: none; background-color: #4CAF50; color: white; padding: 10px 15px; border-radius: 5px; display: inline-block;">Verify Email</a></p>
+    <p><a href=${currentUrl + "user/verify/" + _id + "/" + uniqueString
+      } style="text-decoration: none; background-color: #4CAF50; color: white; padding: 10px 15px; border-radius: 5px; display: inline-block;">Verify Email</a></p>
 
     <p>If you did not sign up for this account, you can ignore this email.</p>
     <p><b>Link expires in 6 hours</b></p>
@@ -212,6 +211,24 @@ const sendVerificationEmail = ({ _id, email, name }, res) => {
       });
     });
 };
+
+//resend verification email
+router.post('/resend-verification-link', async(req, res)=>{
+  try{
+    let {userId, email}=req.body;
+
+    if(!userId||!email){
+      throw Error("Empty user details not allowed")
+    }else{
+      await UserVerification.deleteMany({userId:userId, email:email});sendVerificationEmail({_id:userId, email}, res);
+    }
+  }catch(err){
+    res.json({
+      status:'FAILED',
+      message:`Verification Link resend Failed. ${err.message}`
+    })
+  }
+})
 
 //verify email
 router.get("/verify/:userId/:uniqueString", (req, res) => {
